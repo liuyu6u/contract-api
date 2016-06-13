@@ -29,6 +29,17 @@ public class JsonApiDocGenerator {
         }
     }
 
+
+    /**
+     *
+     * 生成obj代表的json请求/相应文件，以及由obj中@Jdoc注解的值和文档
+     *
+     * 生成的json文件请使用idea的自带格式化进行格式化，快捷键"ctrl+alt+L".
+     *
+     * @param fileName 接口文档的名称，不包含任何后缀
+     * @param obj 要生成json和doc的对象
+     * @throws Exception
+     */
     public static void generate(String fileName,Object obj) throws Exception {
         String classPath = JsonApiDocGenerator.class.getClassLoader().getResource("").getPath();
         String srcPath = new File(classPath).getParentFile().getParentFile().getPath();

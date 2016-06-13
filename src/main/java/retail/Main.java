@@ -9,6 +9,7 @@ import retail.service.JsonApiDocGenerator;
 public class Main {
 
     public static void main(String[] args) throws Exception {
+
         JsonApiDocGenerator.generate("abc", new MaoBuPrd());
     }
 
