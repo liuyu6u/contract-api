@@ -8,7 +8,9 @@ import retail.domain.MaoBuPrd;
 
 import java.io.*;
 import java.lang.reflect.*;
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -58,7 +60,7 @@ public class JsonApiDocGenerator {
 
         FileWriter docWriter = new FileWriter(docFile);
 
-        jsonAndDoc(jg,docWriter,new MaoBuPrd());
+        jsonAndDoc(jg,docWriter,obj);
 
         jg.flush();
         out.flush();
@@ -93,7 +95,25 @@ public class JsonApiDocGenerator {
                     } else {
                         jg.writeString(value);
                     }
-                } else if(filedType.equals(List.class) || filedType.equals(Array.class)) {
+                } else if(filedType.isArray()) {
+                    Class compClz = filedType.getComponentType();
+                    jg.writeStartArray();
+                    if(isPrimitive(compClz)) {
+                        if(isNumber(compClz)) {
+                            for(String v:value.split(",")) {
+                                jg.writeRawValue(v);
+                            }
+                        } else {
+                            for(String v:value.split(",")) {
+                                jg.writeString(v);
+                            }
+                        }
+                    } else {
+                        jsonAndDoc(jg,docWriter,compClz.newInstance());
+                    }
+                    jg.writeEndArray();
+                }
+                else if(filedType.equals(List.class) || filedType.equals(Set.class)) {
                     Type type = md.getGenericReturnType();
                     if(type instanceof ParameterizedType) // 【3】如果是泛型参数的类型
                     {
@@ -115,7 +135,8 @@ public class JsonApiDocGenerator {
                         }
                         jg.writeEndArray();
                     }
-                } else {
+                }
+                else {
                     jsonAndDoc(jg, docWriter, filedType.newInstance());
                 }
             }
@@ -127,8 +148,8 @@ public class JsonApiDocGenerator {
     }
 
 
-    static Class[] numberClzs = new Class[]{byte.class,short.class,int.class,long.class,float.class,double.class,Byte.class,Short.class,Integer.class,Long.class,Float.class,Double.class};
-    static Class[] primitiveClzs = new Class[]{String.class,Byte.class,Short.class,Integer.class,Long.class,Character.class,Float.class,Double.class,Void.class};
+    static Class[] numberClzs = new Class[]{byte.class,short.class,int.class,long.class,float.class,double.class,Byte.class,Short.class,Integer.class,Long.class,Float.class,Double.class,Date.class};
+    static Class[] primitiveClzs = new Class[]{String.class,Date.class,Byte.class,Short.class,Integer.class,Long.class,Character.class,Float.class,Double.class,Void.class};
     static boolean isPrimitive(Class clz) {
         if(clz.isPrimitive())
             return true;

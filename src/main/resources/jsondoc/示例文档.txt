@@ -1,0 +1,9 @@
+size: 显示器的大小
+supportMemories: 可以支持的内存大小
+supportUSBs: 支持的usb类型
+brand: 电脑所属品牌
+memory: 内存大小
+assemble: 出厂日期
+components: 电脑包含的组件列表
+price: 组件的价格
+compName: 组件名称

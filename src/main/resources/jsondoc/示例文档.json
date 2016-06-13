@@ -1,0 +1,24 @@
+{
+  "size": 16,
+  "supportMemories": [
+    2,
+    4,
+    8,
+    16,
+    32
+  ],
+  "supportUSBs": [
+    "usb1",
+    "usb2",
+    "usb3"
+  ],
+  "brand": "联想",
+  "memory": 4.44,
+  "assemble": 1562598452,
+  "components": [
+    {
+      "price": "455",
+      "compName": "主板"
+    }
+  ]
+}
