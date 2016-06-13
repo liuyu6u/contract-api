@@ -1,0 +1,4 @@
+id: idd
+maoBuPrdList: maoBuPrdListsdfdf
+shangPingBianMa: 商品编码
+dangQiHao: 档期号
