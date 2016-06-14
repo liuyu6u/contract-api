@@ -1,6 +1,9 @@
 package retail.domain.example;
 
 import retail.annotation.Jdoc;
+import retail.domain.example.subs.Component;
+import retail.domain.example.subs.Machine;
+import retail.domain.example.subs.Windows;
 
 import java.util.Date;
 import java.util.List;
@@ -8,7 +11,7 @@ import java.util.List;
 /**
  * Created by LiuYu on 2016/6/13.
  */
-public class Computer {
+public class Computer extends Machine {
 
     @Jdoc(value = "联想", doc = "电脑所属品牌")
     private String brand;
@@ -30,6 +33,18 @@ public class Computer {
 
     @Jdoc(doc="电脑包含的组件列表")
     private List<Component> components;
+
+    @Jdoc(refClz = Windows.class,refField = "osName")
+    private String oName;
+
+
+    public String getOName() {
+        return oName;
+    }
+
+    public void setOName(String oName) {
+        this.oName = oName;
+    }
 
     public String getBrand() {
         return brand;

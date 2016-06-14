@@ -1,9 +1,15 @@
+message: 返回的消息
+code: 返回的代码
+success: 是否成功
+model: 数据模型
+madeOf: 制作材料
 size: 显示器的大小
 supportMemories: 可以支持的内存大小
 supportUSBs: 支持的usb类型
+oName: 操作系统名称
 brand: 电脑所属品牌
 memory: 内存大小
 assemble: 出厂日期
 components: 电脑包含的组件列表
-price: 组件的价格
 compName: 组件名称
+price: 组件的价格

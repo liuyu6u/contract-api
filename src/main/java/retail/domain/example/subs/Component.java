@@ -1,11 +1,11 @@
-package retail.domain.example;
+package retail.domain.example.subs;
 
 import retail.annotation.Jdoc;
 
 /**
  * Created by LiuYu on 2016/6/13.
  */
-public class Component {
+public class Component{
 
     @Jdoc(value="主板", doc="组件名称")
     private String compName;
