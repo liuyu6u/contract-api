@@ -1,0 +1,7 @@
+protoType: 1库存补 2销售补
+protoNo: 协议号
+executeEnd: 执行结束时间
+goodsNo: 商品编码
+scheduleNo: 档期号
+executeStart: 执行开始时间
+supplierCardNo: 供应商卡号

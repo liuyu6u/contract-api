@@ -1,0 +1,31 @@
+fifthRate: 第五档补偿率
+fifthEnd: 第五档止
+fifthStart: 第五档起
+fourthRate: 第四档补偿率
+fourthEnd: 第四档止
+thirdRate: 第三档补偿率
+thirdEnd: 第三档止
+thirdStart: 第三档起
+secondRate: 第二档补偿率
+secondEnd: 第二档止
+firstRate: 第一档补偿率
+firstEnd: 第一档止
+firstStart: 第一档起
+outShops: 排除门店号集合，以逗号分隔
+shops: 追加店铺号集合，以逗号分隔
+groupShops: 促销门店组集合，以逗号分隔
+executeEnd: 档期执行结束时间
+goodsName: 商品名称
+goodsNo: 商品编码
+scheduleNo: 档期号
+fourthStart: 第四档起
+secondStart: 第二档起
+eaCompensate: 按EA补偿
+rateCompensate: 按率补偿%
+toRateCompensate: 按率补偿至
+toQuotaCompensate: 按额补偿至
+saleMaoCompensateWay: 销售毛利补偿方式 1按额补偿至 2按率补偿至 3按EA补偿 4销售毛补按率补偿 5按率阶梯补偿-全额 6按率阶梯补偿-分段。库存毛利补偿 1 库存毛补
+executeStart: 档期执行开始时间
+isTicketOff: 是否票扣 1是2否
+supplierName: 供应商名称
+supplierCardNo: 供应商卡号

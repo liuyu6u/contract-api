@@ -7,6 +7,7 @@ import retail.annotation.Jdoc;
 
 import java.io.*;
 import java.lang.reflect.*;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -59,7 +60,7 @@ public class JsonApiDocGenerator {
         FileWriter docWriter = new FileWriter(docFile);
 
         jg.writeStartObject();
-        jsonAndDoc(jg, docWriter, obj);
+        jsonAndDoc(jg, docWriter, obj,obj.getClass());
         jg.writeEndObject();
 
         jg.flush();
@@ -70,13 +71,11 @@ public class JsonApiDocGenerator {
         docWriter.close();
     }
 
-    static String jsonAndDoc(JsonGenerator jg, FileWriter docWriter, Object obj) throws Exception {
-
-        Class objClz = obj.getClass();
+    static String jsonAndDoc(JsonGenerator jg, FileWriter docWriter, Object obj, Class objClz) throws Exception {
 
         Class superClz = objClz.getSuperclass();
         if(!superClz.equals(Object.class)) {
-            jsonAndDoc(jg, docWriter, superClz.newInstance());
+            jsonAndDoc(jg, docWriter, obj, superClz);
         }
 
         Method[] mds = objClz.getDeclaredMethods();
@@ -92,11 +91,26 @@ public class JsonApiDocGenerator {
                 Class filedType = md.getReturnType();
                 Type fieldGType = md.getGenericReturnType();
 
-                Jdoc jDoc = objClz.getDeclaredField(fieldName).getAnnotation(Jdoc.class);
-                String value = jDoc.value();
-                String doc = jDoc.doc();
-                Class refClz = jDoc.refClz();
-                String refField = jDoc.refField();
+                String value = "";
+                String doc = "";
+                Class refClz = Object.class;
+                String refField = "";
+
+                try {
+                    Jdoc jDoc = objClz.getDeclaredField(fieldName).getAnnotation(Jdoc.class);
+                    if(jDoc!=null) {
+                        value = jDoc.value();
+                        doc = jDoc.doc();
+                        refClz = jDoc.refClz();
+                        refField = jDoc.refField();
+                    } else {
+                        continue;
+                    }
+                } catch (NoSuchFieldException e) {
+                    continue;
+                } catch (SecurityException e) {
+                    continue;
+                }
 
                 if (!refClz.equals(Object.class)) {
                     if (refField.equals("")) {
@@ -116,7 +130,7 @@ public class JsonApiDocGenerator {
                 if (isClzParmType(clzParmTypes, fieldGType)) {
                     Class realClz = md.invoke(obj).getClass();
                     jg.writeStartObject();
-                    jsonAndDoc(jg, docWriter, realClz.newInstance());
+                    jsonAndDoc(jg, docWriter, realClz.newInstance(),realClz);
                     jg.writeEndObject();
                 } else {
                     if (isPrimitive(filedType)) {
@@ -140,7 +154,7 @@ public class JsonApiDocGenerator {
                             }
                         } else {
                             jg.writeStartObject();
-                            jsonAndDoc(jg, docWriter, compClz.newInstance());
+                            jsonAndDoc(jg, docWriter, compClz.newInstance(),compClz);
                             jg.writeEndObject();
                         }
                         jg.writeEndArray();
@@ -163,14 +177,14 @@ public class JsonApiDocGenerator {
                                 }
                             } else {
                                 jg.writeStartObject();
-                                jsonAndDoc(jg, docWriter, genericClazz.newInstance());
+                                jsonAndDoc(jg, docWriter, genericClazz.newInstance(),genericClazz);
                                 jg.writeEndObject();
                             }
                             jg.writeEndArray();
                         }
                     } else {
                         jg.writeStartObject();
-                        jsonAndDoc(jg, docWriter, filedType.newInstance());
+                        jsonAndDoc(jg, docWriter, filedType.newInstance(),filedType);
                         jg.writeEndObject();
                     }
                 }
@@ -182,8 +196,8 @@ public class JsonApiDocGenerator {
     }
 
 
-    static Class[] numberClzs = new Class[]{byte.class, short.class, int.class, long.class, float.class, double.class, boolean.class, Boolean.class, Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class, Date.class};
-    static Class[] primitiveClzs = new Class[]{String.class, Date.class, Byte.class, Short.class, Integer.class, Long.class, Character.class, Float.class, Double.class, Boolean.class, Void.class};
+    static Class[] numberClzs = new Class[]{byte.class, short.class, int.class, long.class, float.class, double.class, boolean.class, Boolean.class, Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class, BigDecimal.class, Date.class};
+    static Class[] primitiveClzs = new Class[]{String.class, Date.class, Byte.class, Short.class, Integer.class, Long.class, Character.class, Float.class, Double.class,BigDecimal.class, Boolean.class, Void.class};
 
     static boolean isPrimitive(Class clz) {
         if (clz.isPrimitive())

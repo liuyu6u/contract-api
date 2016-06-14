@@ -1,0 +1,15 @@
+{
+  "scheduleNo": "BL6031",
+  "goodsNo": "51922",
+  "goodsName": "燕京330ml精品听啤",
+  "executeEnd": 1465885614000,
+  "protoNo": "2016020322",
+  "groupShops": "PF01,PF02,PF03,PF11,PH01,PH11,PH31",
+  "shops": "1457,1464,1465",
+  "outShops": "1492,1505",
+  "supplierCardNo": "300702",
+  "supplierName": "北京燕京啤酒股份有限公司（精品）",
+  "executeStart": 1465885614000,
+  "compensateRawWay": "销售毛补",
+  "compensateRawWayDetail": "按EA补偿: 0.5元"
+}

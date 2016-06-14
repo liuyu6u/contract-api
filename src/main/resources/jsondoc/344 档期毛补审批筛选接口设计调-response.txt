@@ -1,0 +1,13 @@
+scheduleNo: 档期号
+goodsNo: 商品编码
+goodsName: 商品名称
+executeEnd: 执行结束时间
+protoNo: 协议号
+groupShops: 促销门店组集合，以逗号分隔
+shops: 追加店铺号集合，以逗号分隔
+outShops: 排除门店号集合，以逗号分隔
+supplierCardNo: 供应商卡号
+supplierName: 供应商名称
+executeStart: 执行开始时间
+compensateRawWay: 毛利补偿方式: 销售毛补、库存毛补
+compensateRawWayDetail: 毛利补偿方式具体细节

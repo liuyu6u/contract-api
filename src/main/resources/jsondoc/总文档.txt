@@ -1,0 +1,55 @@
+id: 合同商品数据库主键ID
+comment: 备注
+contractId: 主体主键
+protoNo: 协议号
+contractNo: 合同号
+scheduleNo: 档期号
+uGroup: u课
+executeEnd: 档期执行结束时间
+goodsNo: 商品编码
+goodsName: 商品名称
+groupShops: 促销门店组集合，以逗号分隔
+shops: 追加店铺号集合，以逗号分隔
+outShops: 排除门店号集合，以逗号分隔
+firstStart: 第一档起
+firstEnd: 第一档止
+firstRate: 第一档补偿率
+secondEnd: 第二档止
+secondRate: 第二档补偿率
+thirdStart: 第三档起
+thirdEnd: 第三档止
+thirdRate: 第三档补偿率
+fourthEnd: 第四档止
+fourthRate: 第四档补偿率
+fifthStart: 第五档起
+fifthEnd: 第五档止
+fifthRate: 第五档补偿率
+isAbnormal: 是否正常 1是0否
+createWay: 是导入的还是新增的 1导入2新增
+protoType: 协议类型,1-无档期库存毛利补偿,2-无档期销售毛利补偿 3有档期库存毛利补偿 4 有档期销售毛利补偿 5 日常维护协议
+fileTime: 归档时间
+createDate: 创建时间
+modifyDate: 最后修改时间
+status: 数据状态
+supplierCardNo: 供应商卡号
+supplierName: 供应商名称
+executeStart: 档期执行开始时间
+saleMaoCompensateWay: 销售毛利补偿方式 1按额补偿至 2按率补偿至 3按EA补偿4销售毛补按率补偿 5按率阶梯补偿-全额 6按率阶梯补偿-分段。库存毛利补偿 1 库存毛补
+toQuotaCompensate: 按额补偿至
+toRateCompensate: 按率补偿至
+rateCompensate: 按率补偿%
+eaCompensate: 按EA补偿
+secondStart: 第二档起
+fourthStart: 第四档起
+firstAbnormal: 首个异常码
+firstAbnormalDesc: 首个异常描述
+addExamineStatus: 审批状态 1审批中 2审批通过 3审批驳回
+isCreateContract: 是否创建合同 1是0否
+theContractStatus: 合同的状态 0-"未发送"1-"待确认",2- "执行中",3-"审批中",4-"未通过",5-"待执行",6-"已结束"
+createRelationType: 创建人类型
+createRelationId: 创建人id
+modifyRelationType: 最后修改人类型
+modifyRelationId: 最后操作人id
+contractMainId: 主合同主键
+scheduleStart: 档期开始时间
+scheduleEnd: 档期结束时间
