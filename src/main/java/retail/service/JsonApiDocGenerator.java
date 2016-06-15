@@ -78,72 +78,92 @@ public class JsonApiDocGenerator {
             jsonAndDoc(jg, docWriter, obj, superClz);
         }
 
-        Method[] mds = objClz.getDeclaredMethods();
+//        Method[] mds = objClz.getDeclaredMethods();
+        Field[] fields = objClz.getDeclaredFields();
         TypeVariable[] clzParmTypes = objClz.getTypeParameters();
 
-        for (Method md : mds) {
-            String mdName = md.getName();
-            Matcher matcher = getPattern.matcher(mdName);
-            if (matcher.matches()) {
-                String CameledFieldName = matcher.group(1) != null ? matcher.group(1) : matcher.group(2);
-                String fieldName = CameledFieldName.substring(0, 1).toLowerCase() + CameledFieldName.substring(1);
-                md.invoke(obj);
-                Class filedType = md.getReturnType();
-                Type fieldGType = md.getGenericReturnType();
+        for (Field fd : fields) {
+            String fieldName = fd.getName();
+            Class filedType = fd.getType();
+            Type fieldGType = fd.getGenericType();
 
-                String value = "";
-                String doc = "";
-                Class refClz = Object.class;
-                String refField = "";
+            String value = "";
+            String doc = "";
+            Class refClz = Object.class;
+            String refField = "";
 
-                try {
-                    Jdoc jDoc = objClz.getDeclaredField(fieldName).getAnnotation(Jdoc.class);
-                    if(jDoc!=null) {
-                        value = jDoc.value();
-                        doc = jDoc.doc();
-                        refClz = jDoc.refClz();
-                        refField = jDoc.refField();
-                    } else {
-                        continue;
-                    }
-                } catch (NoSuchFieldException e) {
-                    continue;
-                } catch (SecurityException e) {
-                    continue;
-                }
-
-                if (!refClz.equals(Object.class)) {
-                    if (refField.equals("")) {
-                        throw new RuntimeException(fieldName + "必须同时声明refClz和refField!");
-                    }
-                    Jdoc refJdoc = refClz.getDeclaredField(refField).getAnnotation(Jdoc.class);
-                    value = refJdoc.value();
-                    doc = refJdoc.doc();
-                }
-
-                jg.writeFieldName(fieldName);
-                docWriter.write(fieldName);
-                docWriter.write(": ");
-                docWriter.write(doc);
-                docWriter.write("\n");
-
-                if (isClzParmType(clzParmTypes, fieldGType)) {
-                    Class realClz = md.invoke(obj).getClass();
-                    jg.writeStartObject();
-                    jsonAndDoc(jg, docWriter, realClz.newInstance(),realClz);
-                    jg.writeEndObject();
+            try {
+                Jdoc jDoc = objClz.getDeclaredField(fieldName).getAnnotation(Jdoc.class);
+                if(jDoc!=null) {
+                    value = jDoc.value();
+                    doc = jDoc.doc();
+                    refClz = jDoc.refClz();
+                    refField = jDoc.refField();
                 } else {
-                    if (isPrimitive(filedType)) {
-                        if (isNumber(filedType)) {
-                            jg.writeRawValue(value);
+                    continue;
+                }
+            } catch (NoSuchFieldException e) {
+                continue;
+            } catch (SecurityException e) {
+                continue;
+            }
+
+            if (!refClz.equals(Object.class)) {
+                if (refField.equals("")) {
+                    throw new RuntimeException(fieldName + "必须同时声明refClz和refField!");
+                }
+                Jdoc refJdoc = refClz.getDeclaredField(refField).getAnnotation(Jdoc.class);
+                value = refJdoc.value();
+                doc = refJdoc.doc();
+            }
+
+            jg.writeFieldName(fieldName);
+            docWriter.write(fieldName);
+            docWriter.write(": ");
+            docWriter.write(doc);
+            docWriter.write("\n");
+
+            if (isClzParmType(clzParmTypes, fieldGType)) {
+                String getMethodFieldName = fieldName.substring(0,1).toUpperCase() + fieldName.substring(1);
+                Method md = objClz.getDeclaredMethod("get"+getMethodFieldName);
+                Class realClz = md.invoke(obj).getClass();
+                jg.writeStartObject();
+                jsonAndDoc(jg, docWriter, realClz.newInstance(),realClz);
+                jg.writeEndObject();
+            } else {
+                if (isPrimitive(filedType)) {
+                    if (isNumber(filedType)) {
+                        jg.writeRawValue(value);
+                    } else {
+                        jg.writeString(value);
+                    }
+                } else if (filedType.isArray()) {
+                    Class compClz = filedType.getComponentType();
+                    jg.writeStartArray();
+                    if (isPrimitive(compClz)) {
+                        if (isNumber(compClz)) {
+                            for (String v : value.split(",")) {
+                                jg.writeRawValue(v);
+                            }
                         } else {
-                            jg.writeString(value);
+                            for (String v : value.split(",")) {
+                                jg.writeString(v);
+                            }
                         }
-                    } else if (filedType.isArray()) {
-                        Class compClz = filedType.getComponentType();
+                    } else {
+                        jg.writeStartObject();
+                        jsonAndDoc(jg, docWriter, compClz.newInstance(),compClz);
+                        jg.writeEndObject();
+                    }
+                    jg.writeEndArray();
+                } else if (filedType.equals(List.class) || filedType.equals(Set.class)) {
+                    if (fieldGType instanceof ParameterizedType) // 【3】如果是泛型参数的类型
+                    {
+                        ParameterizedType pt = (ParameterizedType) fieldGType;
+                        Class genericClazz = (Class) pt.getActualTypeArguments()[0];
                         jg.writeStartArray();
-                        if (isPrimitive(compClz)) {
-                            if (isNumber(compClz)) {
+                        if (isPrimitive(genericClazz)) {
+                            if (isNumber(genericClazz)) {
                                 for (String v : value.split(",")) {
                                     jg.writeRawValue(v);
                                 }
@@ -154,39 +174,15 @@ public class JsonApiDocGenerator {
                             }
                         } else {
                             jg.writeStartObject();
-                            jsonAndDoc(jg, docWriter, compClz.newInstance(),compClz);
+                            jsonAndDoc(jg, docWriter, genericClazz.newInstance(),genericClazz);
                             jg.writeEndObject();
                         }
                         jg.writeEndArray();
-                    } else if (filedType.equals(List.class) || filedType.equals(Set.class)) {
-                        Type type = md.getGenericReturnType();
-                        if (type instanceof ParameterizedType) // 【3】如果是泛型参数的类型
-                        {
-                            ParameterizedType pt = (ParameterizedType) type;
-                            Class genericClazz = (Class) pt.getActualTypeArguments()[0];
-                            jg.writeStartArray();
-                            if (isPrimitive(genericClazz)) {
-                                if (isNumber(genericClazz)) {
-                                    for (String v : value.split(",")) {
-                                        jg.writeRawValue(v);
-                                    }
-                                } else {
-                                    for (String v : value.split(",")) {
-                                        jg.writeString(v);
-                                    }
-                                }
-                            } else {
-                                jg.writeStartObject();
-                                jsonAndDoc(jg, docWriter, genericClazz.newInstance(),genericClazz);
-                                jg.writeEndObject();
-                            }
-                            jg.writeEndArray();
-                        }
-                    } else {
-                        jg.writeStartObject();
-                        jsonAndDoc(jg, docWriter, filedType.newInstance(),filedType);
-                        jg.writeEndObject();
                     }
+                } else {
+                    jg.writeStartObject();
+                    jsonAndDoc(jg, docWriter, filedType.newInstance(),filedType);
+                    jg.writeEndObject();
                 }
             }
         }
